@@ -2,7 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3009;
 const expectedToken = process.env.BEARER_TOKEN || 'scanner-test-token';
 
 app.use(express.json());
