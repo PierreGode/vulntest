@@ -22,6 +22,9 @@ The server listens on `http://localhost:3000` by default.
 - `GET /health` - basic health check
 - `GET /api/public` - no auth required
 - `GET /api/secure` - requires `Authorization: Bearer <token>`
+- `GET /api/eval?expr=2+2` - intentionally unsafe eval (critical)
+- `GET /api/file?path=example.txt` - intentionally unsafe file read (path traversal)
+- `GET /api/exec?cmd=whoami` - intentionally unsafe command execution (critical)
 
 ## Auth token
 Set `BEARER_TOKEN` to define the expected token.
