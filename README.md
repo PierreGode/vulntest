@@ -16,7 +16,12 @@ npm install
 npm start
 ```
 
-The server listens on `http://localhost:3000` by default.
+The server listens on `http://localhost:3009` by default.
+
+## OpenAPI / Swagger
+The API exposes a Swagger UI and raw OpenAPI spec for scanners to import all endpoints before scanning:
+- Swagger UI: `http://localhost:3009/api-docs`
+- OpenAPI JSON: `http://localhost:3009/openapi.json`
 
 ## Endpoints
 - `GET /health` - basic health check
@@ -36,8 +41,8 @@ BEARER_TOKEN=scanner-test-token npm start
 
 Test with curl:
 ```bash
-curl -i http://localhost:3000/api/secure
-curl -i -H "Authorization: Bearer scanner-test-token" http://localhost:3000/api/secure
+curl -i http://localhost:3009/api/secure
+curl -i -H "Authorization: Bearer scanner-test-token" http://localhost:3009/api/secure
 ```
 
 ## Cleanup / Remove

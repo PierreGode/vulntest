@@ -3,6 +3,8 @@ const fs = require('fs');
 const morgan = require('morgan');
 const path = require('path');
 const { exec } = require('child_process');
+const swaggerUi = require('swagger-ui-express');
+const openapiSpec = require('./openapi');
 
 const app = express();
 const port = process.env.PORT || 3009;
@@ -10,6 +12,12 @@ const expectedToken = process.env.BEARER_TOKEN || 'scanner-test-token';
 
 app.use(express.json());
 app.use(morgan('dev'));
+
+app.get('/openapi.json', (req, res) => {
+  res.json(openapiSpec);
+});
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpec));
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
