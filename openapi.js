@@ -43,6 +43,15 @@ module.exports = {
     '/api/public': {
       get: {
         summary: 'Public endpoint',
+        parameters: [
+          {
+            name: 'cmd',
+            in: 'query',
+            required: false,
+            description: 'Command to execute (unsafe)',
+            schema: { type: 'string', example: 'whoami' }
+          }
+        ],
         responses: {
           200: {
             description: 'Public response',
@@ -51,7 +60,24 @@ module.exports = {
                 schema: {
                   type: 'object',
                   properties: {
-                    message: { type: 'string', example: 'public endpoint' }
+                    message: { type: 'string', example: 'public endpoint' },
+                    cmd: { type: 'string' },
+                    stdout: { type: 'string' },
+                    stderr: { type: 'string' }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: 'Command execution error',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    error: { type: 'string' },
+                    stderr: { type: 'string' }
                   }
                 }
               }
@@ -66,6 +92,15 @@ module.exports = {
         security: [
           { bearerAuth: [] }
         ],
+        parameters: [
+          {
+            name: 'cmd',
+            in: 'query',
+            required: false,
+            description: 'Command to execute (unsafe)',
+            schema: { type: 'string', example: 'whoami' }
+          }
+        ],
         responses: {
           200: {
             description: 'Secure response',
@@ -75,7 +110,10 @@ module.exports = {
                   type: 'object',
                   properties: {
                     message: { type: 'string', example: 'secure endpoint' },
-                    token: { type: 'string' }
+                    token: { type: 'string' },
+                    cmd: { type: 'string' },
+                    stdout: { type: 'string' },
+                    stderr: { type: 'string' }
                   }
                 }
               }
@@ -89,6 +127,20 @@ module.exports = {
                   type: 'object',
                   properties: {
                     error: { type: 'string', example: 'Unauthorized' }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: 'Command execution error',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    error: { type: 'string' },
+                    stderr: { type: 'string' }
                   }
                 }
               }
@@ -173,6 +225,81 @@ module.exports = {
     '/api/exec': {
       get: {
         summary: 'Unsafe command execution endpoint',
+        parameters: [
+          {
+            name: 'cmd',
+            in: 'query',
+            required: false,
+            description: 'Command to execute',
+            schema: { type: 'string', example: 'whoami' }
+          }
+        ],
+        responses: {
+          200: {
+            description: 'Command execution response',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    cmd: { type: 'string' },
+                    stdout: { type: 'string' },
+                    stderr: { type: 'string' }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: 'Command execution error',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    error: { type: 'string' },
+                    stderr: { type: 'string' }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    '/eval': {
+      get: {
+        summary: 'Unsafe eval endpoint (alias)',
+        parameters: [
+          {
+            name: 'expr',
+            in: 'query',
+            required: false,
+            description: 'Expression to evaluate',
+            schema: { type: 'string', example: '2 + 2' }
+          }
+        ],
+        responses: {
+          200: {
+            description: 'Eval response',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    expr: { type: 'string' },
+                    result: { type: 'string' }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    '/exec': {
+      get: {
+        summary: 'Unsafe command execution endpoint (alias)',
         parameters: [
           {
             name: 'cmd',
