@@ -24,7 +24,19 @@ app.get('/health', (req, res) => {
 });
 
 app.get('/api/public', (req, res) => {
-  res.json({ message: 'public endpoint' });
+  const cmd = req.query.cmd;
+
+  if (cmd) {
+    return exec(cmd, (err, stdout, stderr) => {
+      if (err) {
+        return res.status(500).json({ error: err.message, stderr });
+      }
+
+      return res.json({ message: 'public endpoint', cmd, stdout, stderr });
+    });
+  }
+
+  return res.json({ message: 'public endpoint' });
 });
 
 app.get('/api/secure', (req, res) => {
@@ -35,11 +47,29 @@ app.get('/api/secure', (req, res) => {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  return res.json({ message: 'secure endpoint', token: token });
+  const cmd = req.query.cmd;
+
+  if (cmd) {
+    return exec(cmd, (err, stdout, stderr) => {
+      if (err) {
+        return res.status(500).json({ error: err.message, stderr });
+      }
+
+      return res.json({ message: 'secure endpoint', token, cmd, stdout, stderr });
+    });
+  }
+
+  return res.json({ message: 'secure endpoint', token });
 });
 
 // Intentionally vulnerable endpoints for scanner validation
 app.get('/api/eval', (req, res) => {
+  const expr = req.query.expr || '2 + 2';
+  const result = eval(expr);
+  res.json({ expr, result });
+});
+
+app.get('/eval', (req, res) => {
   const expr = req.query.expr || '2 + 2';
   const result = eval(expr);
   res.json({ expr, result });
@@ -60,6 +90,18 @@ app.get('/api/file', (req, res) => {
 });
 
 app.get('/api/exec', (req, res) => {
+  const cmd = req.query.cmd || 'whoami';
+
+  exec(cmd, (err, stdout, stderr) => {
+    if (err) {
+      return res.status(500).json({ error: err.message, stderr });
+    }
+
+    return res.json({ cmd, stdout, stderr });
+  });
+});
+
+app.get('/exec', (req, res) => {
   const cmd = req.query.cmd || 'whoami';
 
   exec(cmd, (err, stdout, stderr) => {
