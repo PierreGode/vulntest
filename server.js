@@ -1,5 +1,8 @@
 const express = require('express');
+const axios = require('axios');
+const bodyParser = require('body-parser');
 const fs = require('fs');
+const _ = require('lodash');
 const morgan = require('morgan');
 const path = require('path');
 const { exec } = require('child_process');
@@ -11,6 +14,7 @@ const port = process.env.PORT || 3009;
 const expectedToken = process.env.BEARER_TOKEN || 'scanner-test-token';
 
 app.use(express.json());
+app.use(bodyParser.json());
 app.use(morgan('dev'));
 
 app.get('/openapi.json', (req, res) => {
@@ -99,6 +103,19 @@ app.get('/api/exec', (req, res) => {
 
     return res.json({ cmd, stdout, stderr });
   });
+});
+
+// Vulnerable endpoint with multiple issues
+app.post('/api/user/update', (req, res) => {
+  // Prototype pollution via lodash
+  const userData = _.merge({}, req.body);
+
+  // SSRF via axios with user input
+  if (req.body.fetchUrl) {
+    return axios.get(req.body.fetchUrl).then((response) => res.json(response.data));
+  }
+
+  return res.json(userData);
 });
 
 app.get('/exec', (req, res) => {
