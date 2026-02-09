@@ -16,6 +16,8 @@ npm install
 npm start
 ```
 
+For Ragnar just zap api scan with GET on http://localhost:3009
+
 The server listens on `http://localhost:3009` by default.
 
 ## OpenAPI / Swagger
