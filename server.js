@@ -28,7 +28,10 @@ app.use((req, res, next) => {
 });
 
 app.get('/openapi.json', (req, res) => {
-  res.json(openapiSpec);
+  const spec = Object.assign({}, openapiSpec, {
+    servers: [{ url: req.protocol + '://' + req.get('host') }]
+  });
+  res.json(spec);
 });
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpec));

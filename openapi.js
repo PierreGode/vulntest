@@ -5,11 +5,7 @@ module.exports = {
     version: '1.0.0',
     description: 'Simple API with intentionally vulnerable endpoints for scanner validation.'
   },
-  servers: [
-    {
-      url: 'http://localhost:3009'
-    }
-  ],
+  servers: [],
   components: {
     securitySchemes: {
       bearerAuth: {
@@ -291,6 +287,38 @@ module.exports = {
                     error: { type: 'string' },
                     stderr: { type: 'string' }
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    '/api/user/update': {
+      post: {
+        summary: 'Unsafe user update endpoint',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  username: { type: 'string', example: 'admin' },
+                  role: { type: 'string', example: 'user' },
+                  fetchUrl: { type: 'string', example: 'http://example.com' }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: {
+            description: 'Updated user data or fetched URL response',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object'
                 }
               }
             }
