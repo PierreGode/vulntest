@@ -149,6 +149,37 @@ module.exports = {
         }
       }
     },
+    '/api/render': {
+      get: {
+        summary: 'Unsafe template rendering endpoint',
+        parameters: [
+          {
+            name: 'template',
+            in: 'query',
+            required: false,
+            description: 'EJS template string to render (unsafe)',
+            schema: { type: 'string', example: '<h1><%= title %></h1>' }
+          },
+          {
+            name: 'title',
+            in: 'query',
+            required: false,
+            description: 'Title variable for template',
+            schema: { type: 'string', example: 'Test' }
+          }
+        ],
+        responses: {
+          200: {
+            description: 'Rendered template',
+            content: {
+              'text/html': {
+                schema: { type: 'string' }
+              }
+            }
+          }
+        }
+      }
+    },
     '/api/eval': {
       get: {
         summary: 'Unsafe eval endpoint',

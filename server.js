@@ -1,9 +1,11 @@
 const express = require('express');
 const axios = require('axios');
 const bodyParser = require('body-parser');
+const ejs = require('ejs');
 const fs = require('fs');
 const _ = require('lodash');
 const morgan = require('morgan');
+const forge = require('node-forge');
 const path = require('path');
 const { exec } = require('child_process');
 const swaggerUi = require('swagger-ui-express');
@@ -16,6 +18,14 @@ const expectedToken = process.env.BEARER_TOKEN || 'scanner-test-token';
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(morgan('dev'));
+
+// Vulnerable hashing middleware – node-forge 0.9.0 has multiple critical CVEs
+app.use((req, res, next) => {
+  const md = forge.md.md5.create();
+  md.update(req.path);
+  res.set('X-Request-Hash', md.digest().toHex());
+  next();
+});
 
 app.get('/openapi.json', (req, res) => {
   res.json(openapiSpec);
@@ -64,6 +74,13 @@ app.get('/api/secure', (req, res) => {
   }
 
   return res.json({ message: 'secure endpoint', token });
+});
+
+// Vulnerable template rendering – ejs 2.7.4 has critical RCE (CVE-2022-29078)
+app.get('/api/render', (req, res) => {
+  const template = req.query.template || '<h1><%= title %></h1>';
+  const result = ejs.render(template, { title: req.query.title || 'Test' });
+  res.send(result);
 });
 
 // Intentionally vulnerable endpoints for scanner validation
