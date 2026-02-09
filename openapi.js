@@ -154,7 +154,7 @@ module.exports = {
             in: 'query',
             required: false,
             description: 'EJS template string to render (unsafe)',
-            schema: { type: 'string', example: '<h1><%= title %></h1>' }
+            schema: { type: 'string', example: 'hello' }
           },
           {
             name: 'title',
@@ -185,7 +185,7 @@ module.exports = {
             in: 'query',
             required: false,
             description: 'Expression to evaluate',
-            schema: { type: 'string', example: '2 + 2' }
+            schema: { type: 'string', example: '1' }
           }
         ],
         responses: {
@@ -335,7 +335,7 @@ module.exports = {
             in: 'query',
             required: false,
             description: 'Expression to evaluate',
-            schema: { type: 'string', example: '2 + 2' }
+            schema: { type: 'string', example: '1' }
           }
         ],
         responses: {
